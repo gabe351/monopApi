@@ -1,0 +1,55 @@
+[{
+  "idn_estagio": 0,
+  "estagio": "Não informado",
+  "descricao": ""
+},
+{
+  "idn_estagio": 3,
+  "estagio": "A selecionar",
+  "descricao": "Empreendimentos que ainda serão selecionados da área social"
+},
+{
+  "idn_estagio": 5,
+  "estagio": "Em contratação",
+  "descricao": "Empreendimento selecionado, em processo de envio ou análise de documentação para a contratação."
+},
+{
+  "idn_estagio": 10,
+  "estagio": "Ação Preparatória",
+  "descricao": "1-Para a área de Infraestrutura Logística e de Energia: empreendimento em etapa prévia à licitação, à contratação ou ao início da execução. 2-Para a área Social e Urbana: empreendimento contratado, em fase de preparação para iniciar a licitação"
+},
+{
+  "idn_estagio": 40,
+  "estagio": "Em licitação de obra",
+  "descricao": "Empreendimento em fase de licitação de obra ou licitação concluída, mas sem ordem de serviço."
+},
+{
+  "idn_estagio": 41,
+  "estagio": "Em licitação de projeto",
+  "descricao": "Empreendimento cuja meta é a realização de estudo, projeto, plano, assistência técnica ou desenvolvimento institucional, em fase de licitação"
+},
+{
+  "idn_estagio": 42,
+  "estagio": "Em execução de projeto",
+  "descricao": "Empreendimentos de Cidades Digitais em fase de projeto que posteriormente mudarão para obras."
+},
+{
+  "idn_estagio": 70,
+  "estagio": "Em obras",
+  "descricao": "Empreendimento com ordem de início autorizada ou obra já iniciada."
+},
+{
+  "idn_estagio": 71,
+  "estagio": "Em execução",
+  "descricao": "Empreendimento já iniciado cuja meta é a realização de estudo, projeto, plano, assistência técnica ou desenvolvimento institucional."
+},
+{
+  "idn_estagio": 90,
+  "estagio": "Concluído",
+  "descricao": "Empreendimento concluído, ou obra física concluída, ou estudo, projeto ou contratação finalizados."
+},
+{
+  "idn_estagio": 91,
+  "estagio": "Em operação",
+  "descricao": "Empreendimento da área de Petróleo e Gás, que já entrou em operação, porém ainda não foi concluído."
+}]

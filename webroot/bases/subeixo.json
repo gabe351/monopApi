@@ -1,0 +1,165 @@
+[{
+  "id_digs": 1000,
+  "tipo": "Rodovias",
+  "subeixo": "Transporte"
+},
+{
+  "id_digs": 1001,
+  "tipo": "Ferrovia",
+  "subeixo": "Transporte"
+},
+{
+  "id_digs": 1002,
+  "tipo": "Porto",
+  "subeixo": "Transporte"
+},
+{
+  "id_digs": 1003,
+  "tipo": "Hidrovia",
+  "subeixo": "Transporte"
+},
+{
+  "id_digs": 1004,
+  "tipo": "Aeroporto",
+  "subeixo": "Transporte"
+},
+{
+  "id_digs": 1005,
+  "tipo": "Estradas Vicinais",
+  "subeixo": "Transporte"
+},
+{
+  "id_digs": 2000,
+  "tipo": "Geração de Energia Elétrica",
+  "subeixo": "Energia"
+},
+{
+  "id_digs": 2001,
+  "tipo": "Transmissão de Energia Elétrica",
+  "subeixo": "Energia"
+},
+{
+  "id_digs": 2002,
+  "tipo": "Petróleo e Gás Natural",
+  "subeixo": "Energia"
+},
+{
+  "id_digs": 2003,
+  "tipo": "Geologia e Mineração - Cprm",
+  "subeixo": "Energia"
+},
+{
+  "id_digs": 2004,
+  "tipo": "Marinha Mercante Energia",
+  "subeixo": "Energia"
+},
+{
+  "id_digs": 2005,
+  "tipo": "Combustíveis Renováveis",
+  "subeixo": "Energia"
+},
+{
+  "id_digs": 3000,
+  "tipo": "Saneamento",
+  "subeixo": "Cidade Melhor"
+},
+{
+  "id_digs": 3001,
+  "tipo": "Prevenção em áreas de risco",
+  "subeixo": "Cidade Melhor"
+},
+{
+  "id_digs": 3002,
+  "tipo": "Pavimentação",
+  "subeixo": "Cidade Melhor"
+},
+{
+  "id_digs": 3003,
+  "tipo": "Mobilidade Urbana ",
+  "subeixo": "Cidade Melhor"
+},
+{
+  "id_digs": 3004,
+  "tipo": "Cidades Digitais",
+  "subeixo": "Cidade Melhor"
+},
+{
+  "id_digs": 3005,
+  "tipo": "Cidades Históricas",
+  "subeixo": "Cidade Melhor"
+},
+{
+  "id_digs": 3006,
+  "tipo": "Infraestrutura Turística",
+  "subeixo": "Cidade Melhor"
+},
+{
+  "id_digs": 3007,
+  "tipo": "Equipamentos de Esporte de Alto Rendimento",
+  "subeixo": "Cidade Melhor"
+},
+{
+  "id_digs": 3008,
+  "tipo": "Equipamentos Metroviários",
+  "subeixo": "Equipamentos"
+},
+{
+  "id_digs": 4000,
+  "tipo": "UBS",
+  "subeixo": "Comunidade Cidadã"
+},
+{
+  "id_digs": 4001,
+  "tipo": "UPA",
+  "subeixo": "Comunidade Cidadã"
+},
+{
+  "id_digs": 4002,
+  "tipo": "Creches e Pré Escolas",
+  "subeixo": "Comunidade Cidadã"
+},
+{
+  "id_digs": 4003,
+  "tipo": "Quadras Esportivas nas Escolas",
+  "subeixo": "Comunidade Cidadã"
+},
+{
+  "id_digs": 4004,
+  "tipo": "Centro de Artes e Esportes Unificados",
+  "subeixo": "Comunidade Cidadã"
+},
+{
+  "id_digs": 4005,
+  "tipo": "Centro de Iniciação ao Esporte",
+  "subeixo": "Comunidade Cidadã"
+},
+{
+  "id_digs": 5000,
+  "tipo": "MCMV 2",
+  "subeixo": "Habitação"
+},
+{
+  "id_digs": 5001,
+  "tipo": "Urbanização de assentamentos precários",
+  "subeixo": "Habitação"
+},
+{
+  "id_digs": 5002,
+  "tipo": "Financiamento SBPE ",
+  "subeixo": "Habitação"
+},
+{
+  "id_digs": 6000,
+  "tipo": "Luz para Todos",
+  "subeixo": "Água e Luz para todos"
+},
+{
+  "id_digs": 6001,
+  "tipo": "Água em áreas urbanas",
+  "subeixo": "Água e Luz para todos"
+},
+{
+  "id_digs": 6002,
+  "tipo": "Recursos Hídricos",
+  "subeixo": "Água e Luz para todos"
+}]
