@@ -81,6 +81,6 @@ Router::scope('/', function (RouteBuilder $routes) {
 Router::extensions(['json', 'xml']);
 
 Router::scope('/', function ($routes) {
-    $routes->resources('Cocktails');
-    
+    $routes->resources('Obras');
+
 });
