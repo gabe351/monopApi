@@ -30,10 +30,40 @@ class ObrasController extends AppController
         $csvToJson->convertAndSave(ROOT . '/webroot/bases/base');
     }
 
+    private function cleanStr($value){
+        $value = preg_replace('/[^(\x20-\x7F)]*/','', $value);
+        return $value;
+    }
+
+    private function saveDataBase($data){
+        $data = json_decode($data,true);
+        ini_set('memory_limit', '2020M');
+        foreach ($data as $dado){
+            $dado['dat_ciclo'] = date('Y-m-d', strtotime($dado['dat_ciclo']));
+            $dado['dat_selecao'] = date('Y-m-d', strtotime($dado['dat_selecao']));
+            $dado['dat_conclusao_revisada'] = date('Y-m-d', strtotime($dado['dat_conclusao_revisada']));
+
+            $dado['titulo'] = $this->cleanStr($dado['titulo']);
+            $dado['txt_executores'] = $this->cleanStr($dado['txt_executores']);
+
+            $obras = $this->Obras->newEntity();
+            $obra = $this->Obras->patchEntity($obras, $dado);
+            $this->Obras->save($obra);
+        }
+    }
+
     private function getDados($dado){
-        $data = file_get_contents(ROOT.DS.'webroot'.DS.'bases'.DS.$dado.'.json');
-        if(empty($data)){
+        $url = ROOT.DS.'webroot'.DS.'bases'.DS.$dado.'.json';
+        if(!file_exists($url)){
             $this->downloadBase();
+            $data = file_get_contents($url);
+            $this->saveDataBase($data);
+        }
+        elseif(in_array($dado, ['status', 'subeixo'])){
+            $data = file_get_contents($url);
+        }
+        else{
+            $data = $this->paginate($this->Obras);
         }
         return $data;
     }
@@ -66,12 +96,13 @@ class ObrasController extends AppController
         }
     }
 
-    private function filters($data, $filter){
-        $filtros = explode(';', $filter);
-        $obras = json_decode($data,true);
+    private function filters($data, $filter){ 
+        $filtros = explode(';', $filter); 
+        $obras = json_encode($data,true);
+        $obras = json_decode($obras,true);
 
         $newObras = [];
-        foreach($obras as $obra){
+        foreach($obras as $obra){ 
             foreach($filtros as $filtro){
                 $filtro = explode(':', $filtro);
                 if($obra[$filtro[0]] == $filtro[1]){
@@ -80,17 +111,19 @@ class ObrasController extends AppController
 
             }
         }
-        return json_encode($newObras);
+        return $newObras;
     }
 
     private function getDadosExtras($obras){
+        $obras = json_encode($obras, true);
         $obras = json_decode($obras, true);
+        
         $status = $this->getDados('status');
-        $status = json_decode($status, true);
-
+        $status = json_decode($status,true);
+        
         $subeixos = $this->getDados('subeixo');
-        $subeixos = json_decode($subeixos, true);
-
+        $subeixos = json_decode($subeixos,true);
+        
         foreach($obras as $key => $obra){
             foreach($status as $estagio){
                 if($obra['idn_estagio'] == $estagio['idn_estagio']){
@@ -106,5 +139,42 @@ class ObrasController extends AppController
         }
 
         return json_encode($obras);
+    }
+
+    public function getInvestment(){
+        $this->response->type('application/json');
+        $this->autoRender = false;
+        $dados = $this->Obras->find('all', [
+            'conditions' => [''],
+        ])->toArray();
+
+        $menorValor = 0;
+        $maiorValor = 0;
+        $body = [];
+        foreach($dados as $key => $dado){
+            $menorValor = $key == 0 ? $dado['investimento_total'] : $menorValor ;
+            if(!empty($dado['investimento_total'])){
+
+                //$menorValor = $dado['investimento_total'] < $menorValor ? $dado['investimento_total'] : $menorValor ;
+                //$maiorValor = $dado['investimento_total'] > $maiorValor ? $dado['investimento_total'] : $maiorValor ;            
+                if($dado['investimento_total'] < $menorValor){
+                    $menorValor = $dado['investimento_total'];
+                    $body['min'] = $dado;
+                }
+                else{
+                    $menorValor = $menorValor;
+                }
+
+                if($dado['investimento_total'] > $maiorValor){
+                    $maiorValor = $dado['investimento_total'];
+                    $body['max'] = $dado;
+                }
+                else{
+                    $maiorValor = $maiorValor;
+                }
+            }
+        }
+        
+        $this->response->body(json_encode($body));
     }
 }
