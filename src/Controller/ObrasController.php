@@ -59,11 +59,22 @@ class ObrasController extends AppController
             $data = file_get_contents($url);
             $this->saveDataBase($data);
         }
-        elseif(in_array($dado, ['status', 'subeixo'])){
+        /* elseif(in_array($dado, ['status', 'subeixo'])){
             $data = file_get_contents($url);
-        }
-        else{
-            $data = $this->paginate($this->Obras);
+        } */
+        else{ini_set('memory_limit', '2020M');
+            $data = file_get_contents($url);
+
+            if($dado == 'base'){
+                $obrasAux = json_decode($data,true);
+                $obras = [];
+                
+                for($i = 0; $i < 1000; $i++){
+                    $obras[] = $obrasAux[$i];
+                }
+                $data = json_encode($obras);
+            }
+            //$data = $this->paginate($this->Obras);
         }
         return $data;
     }
@@ -98,7 +109,7 @@ class ObrasController extends AppController
 
     private function filters($data, $filter){ 
         $filtros = explode(';', $filter); 
-        $obras = json_encode($data,true);
+        //$obras = json_encode($data,true);
         $obras = json_decode($obras,true);
 
         $newObras = [];
@@ -115,9 +126,9 @@ class ObrasController extends AppController
     }
 
     private function getDadosExtras($obras){
-        $obras = json_encode($obras, true);
+        //$obras = json_encode($obras, true);
         $obras = json_decode($obras, true);
-        
+
         $status = $this->getDados('status');
         $status = json_decode($status,true);
         
