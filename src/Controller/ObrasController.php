@@ -23,7 +23,11 @@ class ObrasController extends AppController
         curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 
         $resultado = curl_exec($ch);
-        ini_set('memory_limit', '2020M');
+        ini_set('memory_limit', '2020M'); 
+        
+        /* $resultado = utf8_encode($resultado);
+        $this->saveDataBase($resultado);
+        pr($resultado);exit; */
 
         $csvToJson = new CsvToJson($resultado, ['bitmask' => 64|128|256]);
         //$data = $csvToJson->convert();
@@ -35,10 +39,12 @@ class ObrasController extends AppController
         return $value;
     }
 
-    private function saveDataBase($data){
-        $data = json_decode($data,true);
+    private function saveDataBase($datas){
+        //$data = json_decode($data,true);
         ini_set('memory_limit', '2020M');
-        foreach ($data as $dado){
+        $datas = array_filter(explode(PHP_EOL, $datas));
+        pr($datas);exit;
+        foreach ($datas as $dado){ 
             $dado['dat_ciclo'] = date('Y-m-d', strtotime($dado['dat_ciclo']));
             $dado['dat_selecao'] = date('Y-m-d', strtotime($dado['dat_selecao']));
             $dado['dat_conclusao_revisada'] = date('Y-m-d', strtotime($dado['dat_conclusao_revisada']));
@@ -110,18 +116,25 @@ class ObrasController extends AppController
     private function filters($data, $filter){ 
         $filtros = explode(';', $filter); 
         //$obras = json_encode($data,true);
-        $obras = json_decode($obras,true);
+        $obras = json_decode($data,true);
 
         $newObras = [];
         foreach($obras as $obra){ 
             foreach($filtros as $filtro){
                 $filtro = explode(':', $filtro);
-                if($obra[$filtro[0]] == $filtro[1]){
+                if($filtro[0] == 'titulo'){
+                    //$pos = strpos($obra[$filtro[0]], $filtro[1]); pr($pos);
+                    if (in_array($filtro[1], $sent)){
+                        $newObras[] = $obra; 
+                    }
+                    //if($pos == 0){ $newObras[] = $obra; }
+                }
+                elseif($obra[$filtro[0]] == $filtro[1]){
                     $newObras[] = $obra;
                 }
 
             }
-        }
+        }pr($newObras);exit;
         return $newObras;
     }
 
