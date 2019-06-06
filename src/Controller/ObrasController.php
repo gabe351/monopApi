@@ -76,6 +76,10 @@ class ObrasController extends AppController
         $url = ROOT.DS.'webroot'.DS.'bases'.DS.$dado.'.json';
         if(!file_exists($url)){
             $this->downloadBase();
+            $this->paginate = [
+                'contain' => ['Tipos', 'Estagios']
+            ];            
+            $data = $this->paginate($this->Obras);
         }
         else{
             $this->paginate = [
