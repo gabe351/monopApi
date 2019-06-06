@@ -24,10 +24,9 @@ class ObrasController extends AppController
 
         $resultado = curl_exec($ch);
         ini_set('memory_limit', '2020M'); 
-        
-        /* $resultado = utf8_encode($resultado);
+        $resultado = utf8_encode($resultado);
         $this->saveDataBase($resultado);
-        pr($resultado);exit; */
+        
 
         $csvToJson = new CsvToJson($resultado, ['bitmask' => 64|128|256]);
         //$data = $csvToJson->convert();
@@ -43,18 +42,23 @@ class ObrasController extends AppController
         //$data = json_decode($data,true);
         ini_set('memory_limit', '2020M');
         $datas = array_filter(explode(PHP_EOL, $datas));
-        pr($datas);exit;
+        pr(explode(',', $datas[0]));
+        unset($datas[0]);
+        
         foreach ($datas as $dado){ 
-            $dado['dat_ciclo'] = date('Y-m-d', strtotime($dado['dat_ciclo']));
-            $dado['dat_selecao'] = date('Y-m-d', strtotime($dado['dat_selecao']));
-            $dado['dat_conclusao_revisada'] = date('Y-m-d', strtotime($dado['dat_conclusao_revisada']));
+            $dado = explode(',', $dado);
+            pr($dado);exit;
+            /*$dado['id'] = $dado['dat_ciclo']
+            $dado['data_ciclo'] = date('Y-m-d', strtotime($dado['data_ciclo']));
+            $dado['data_selecao'] = date('Y-m-d', strtotime($dado['data_selecao']));
+            $dado['data_conclusao_revisada'] = date('Y-m-d', strtotime($dado['dat_conclusao_revisada']));
 
-            $dado['titulo'] = $this->cleanStr($dado['titulo']);
-            $dado['txt_executores'] = $this->cleanStr($dado['txt_executores']);
+            $dado['nome'] = $this->cleanStr($dado['titulo']);
+            $dado['executor'] = $this->cleanStr($dado['txt_executores']);
 
             $obras = $this->Obras->newEntity();
             $obra = $this->Obras->patchEntity($obras, $dado);
-            $this->Obras->save($obra);
+            $this->Obras->save($obra);*/
         }
     }
 
