@@ -45,9 +45,18 @@ class ObrasController extends AppController
         pr(explode(',', $datas[0]));
         unset($datas[0]);
         
-        foreach ($datas as $dado){ 
-            $dado = explode(',', $dado);
-            pr($dado);exit;
+        $keys = str_getcsv(array_shift($datas), ',', '"', '\\');
+
+        foreach ($datas as $key => $values) {
+            $result[] = array_combine($keys, str_getcsv($values, ',', '"', '\\'));
+        }
+        pr($result);exit;
+        foreach ($datas as $key => $dado){
+            
+            $obra = [];
+            //$obra['id'] = 
+            //$dado = explode(',', $dado);
+            pr($datas[$key]);exit;
             /*$dado['id'] = $dado['dat_ciclo']
             $dado['data_ciclo'] = date('Y-m-d', strtotime($dado['data_ciclo']));
             $dado['data_selecao'] = date('Y-m-d', strtotime($dado['data_selecao']));
@@ -59,7 +68,7 @@ class ObrasController extends AppController
             $obras = $this->Obras->newEntity();
             $obra = $this->Obras->patchEntity($obras, $dado);
             $this->Obras->save($obra);*/
-        }
+        }exit;
     }
 
     private function getDados($dado){
