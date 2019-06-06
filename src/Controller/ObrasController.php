@@ -23,13 +23,12 @@ class ObrasController extends AppController
         curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 
         $resultado = curl_exec($ch);
+
         ini_set('memory_limit', '2020M'); 
         $resultado = utf8_encode($resultado);
         $this->saveDataBase($resultado);
-        
 
         $csvToJson = new CsvToJson($resultado, ['bitmask' => 64|128|256]);
-        //$data = $csvToJson->convert();
         $csvToJson->convertAndSave(ROOT . '/webroot/bases/base');
     }
 
@@ -38,64 +37,53 @@ class ObrasController extends AppController
         return $value;
     }
 
-    private function saveDataBase($datas){
-        //$data = json_decode($data,true);
+    private function saveDataBase($csv){
+        set_time_limit(0);
         ini_set('memory_limit', '2020M');
-        $datas = array_filter(explode(PHP_EOL, $datas));
-        pr(explode(',', $datas[0]));
-        unset($datas[0]);
+        $csv = array_filter(explode(PHP_EOL, $csv));
+        unset($csv[0]);
         
-        $keys = str_getcsv(array_shift($datas), ',', '"', '\\');
-
-        foreach ($datas as $key => $values) {
-            $result[] = array_combine($keys, str_getcsv($values, ',', '"', '\\'));
+        foreach ($csv as $key => $values) {
+            $result[] = str_getcsv($values, ',', '"', '\\');
         }
-        pr($result);exit;
-        foreach ($datas as $key => $dado){
-            
+
+        foreach ($result as  $dado){            
             $obra = [];
-            //$obra['id'] = 
-            //$dado = explode(',', $dado);
-            pr($datas[$key]);exit;
-            /*$dado['id'] = $dado['dat_ciclo']
-            $dado['data_ciclo'] = date('Y-m-d', strtotime($dado['data_ciclo']));
-            $dado['data_selecao'] = date('Y-m-d', strtotime($dado['data_selecao']));
-            $dado['data_conclusao_revisada'] = date('Y-m-d', strtotime($dado['dat_conclusao_revisada']));
+            $obra['id'] = $dado[0];
+            $obra['tipo_id'] = $dado[1];
+            $obra['nome'] = $this->cleanStr($dado[2]);
+            $obra['total_investido'] = $dado[3];
+            $obra['uf'] = $dado[4];
+            $obra['municipios'] = $dado[5];
+            $obra['executor'] = $this->cleanStr($dado[6]);
+            $obra['monitorador'] = $dado[7];
+            $obra['estagio_id'] = $dado[8];
+            $obra['data_ciclo'] = date('Y-m-d', strtotime($dado[9]));
+            $obra['data_selecao'] = date('Y-m-d', strtotime($dado[10]));
+            $obra['data_conclusao_revisada'] = date('Y-m-d', strtotime($dado[11]));
+            $obra['latitude'] = $dado[12];
+            $obra['longitude'] = $dado[13];
+            $obra['emblematica'] = $dado[14];
+            $obra['observacao'] = $dado[15];
 
-            $dado['nome'] = $this->cleanStr($dado['titulo']);
-            $dado['executor'] = $this->cleanStr($dado['txt_executores']);
-
-            $obras = $this->Obras->newEntity();
-            $obra = $this->Obras->patchEntity($obras, $dado);
-            $this->Obras->save($obra);*/
-        }exit;
+            $obras = $this->Obras->newEntity(); 
+            $obraSave = $this->Obras->patchEntity($obras, $obra);
+            $this->Obras->save($obraSave);
+        }
     }
 
     private function getDados($dado){
         $url = ROOT.DS.'webroot'.DS.'bases'.DS.$dado.'.json';
         if(!file_exists($url)){
             $this->downloadBase();
-            $data = file_get_contents($url);
-            $this->saveDataBase($data);
         }
-        /* elseif(in_array($dado, ['status', 'subeixo'])){
-            $data = file_get_contents($url);
-        } */
-        else{ini_set('memory_limit', '2020M');
-            $data = file_get_contents($url);
-
-            if($dado == 'base'){
-                $obrasAux = json_decode($data,true);
-                $obras = [];
-                
-                for($i = 0; $i < 1000; $i++){
-                    $obras[] = $obrasAux[$i];
-                }
-                $data = json_encode($obras);
-            }
-            //$data = $this->paginate($this->Obras);
+        else{
+            $this->paginate = [
+                'contain' => ['Tipos', 'Estagios']
+            ];            
+            $data = $this->paginate($this->Obras);
         }
-        return $data;
+        return $data->toArray();
     }
 
     public function index($filter = null)
@@ -107,8 +95,8 @@ class ObrasController extends AppController
         if(!empty($filter)){
             $data = $this->filters($data, $filter);
         }
-        $data = $this->getDadosExtras($data);
-        $this->response->body($data);
+        $obras = json_encode($data,true);
+        $this->response->body($obras);
     }
 
     public function getContructionMap($obra){
@@ -116,8 +104,8 @@ class ObrasController extends AppController
         $this->autoRender = false;
 
         $obra = json_decode($obra, true);
-        if(!empty($obra['obra_latitude']) && !empty($obra['obra_longitude'])) {
-            $mapa = ['latitude' => $obra['obra_latitude'], 'longitude' => $obra['obra_longitude']];
+        if(!empty($obra['latitude']) && !empty($obra['longitude'])) {
+            $mapa = ['latitude' => $obra['latitude'], 'longitude' => $obra['longitude']];
             $this->response->body(json_encode($mapa));
         }
         else{
@@ -126,56 +114,52 @@ class ObrasController extends AppController
         }
     }
 
-    private function filters($data, $filter){ 
-        $filtros = explode(';', $filter); 
-        //$obras = json_encode($data,true);
-        $obras = json_decode($data,true);
+    public function getEstagios(){
+        $this->response->type('application/json');
+        $this->autoRender = false;
 
-        $newObras = [];
-        foreach($obras as $obra){ 
-            foreach($filtros as $filtro){
-                $filtro = explode(':', $filtro);
-                if($filtro[0] == 'titulo'){
-                    //$pos = strpos($obra[$filtro[0]], $filtro[1]); pr($pos);
-                    if (in_array($filtro[1], $sent)){
-                        $newObras[] = $obra; 
-                    }
-                    //if($pos == 0){ $newObras[] = $obra; }
-                }
-                elseif($obra[$filtro[0]] == $filtro[1]){
-                    $newObras[] = $obra;
-                }
+        $this->loadModel('Estagios');
+        $data = $this->Estagios->find('all');
 
-            }
-        }pr($newObras);exit;
-        return $newObras;
+        $this->response->body(json_encode($data));
     }
 
-    private function getDadosExtras($obras){
-        //$obras = json_encode($obras, true);
-        $obras = json_decode($obras, true);
+    public function getTipos(){
+        $this->response->type('application/json');
+        $this->autoRender = false;
 
-        $status = $this->getDados('status');
-        $status = json_decode($status,true);
-        
-        $subeixos = $this->getDados('subeixo');
-        $subeixos = json_decode($subeixos,true);
-        
-        foreach($obras as $key => $obra){
-            foreach($status as $estagio){
-                if($obra['idn_estagio'] == $estagio['idn_estagio']){
-                    $obras[$key]['idn_estagio'] = $estagio;
+        $this->loadModel('Tipos');
+        $data = $this->Tipos->find('all');
+
+        $this->response->body(json_encode($data));
+    }
+
+    private function filters($data, $filter){
+        $filtros = explode(';', $filter); 
+        $newObras = [];
+        $conditions= [];
+        foreach($filtros as $filtro){
+            $filtro = explode(':', $filtro);
+            if(!empty($filtro[1])){
+                if($filtro[0] == 'nome' || $filtro[0] == 'uf'){
+                    $conditions = ["Obras." . $filtro[0] . " LIKE '%$filtro[1]%'"];
                 }
-            }
-
-            foreach($subeixos as $subeixo){
-                if($obra['id_digs'] == $subeixo['id_digs']){
-                    $obras[$key]['id_digs'] = $subeixo;
+                elseif($filtro[0] == 'estagio_id' || $filtro[0] == 'tipo_id'){
+                    $objeto = $filtro[0] == 'estagio_id' ? 'Estagios' : 'Tipos'; 
+                    $this->loadModel($objeto);
+                    $objetoFiltrado = $this->$objeto->get($filtro[1]);
+                }
+                else{
+                    $conditions = ['Obras.' .$filtro[0] => $filtro[1]];
                 }
             }
         }
-
-        return json_encode($obras);
+        $newObra = $this->Obras->find('all', [
+            'conditions' => $conditions,
+            'contain' => ['Tipos', 'Estagios']
+        ]);
+        $newObras[] = $newObra;
+        return $newObras;
     }
 
     public function getInvestment(){
@@ -189,21 +173,18 @@ class ObrasController extends AppController
         $maiorValor = 0;
         $body = [];
         foreach($dados as $key => $dado){
-            $menorValor = $key == 0 ? $dado['investimento_total'] : $menorValor ;
-            if(!empty($dado['investimento_total'])){
-
-                //$menorValor = $dado['investimento_total'] < $menorValor ? $dado['investimento_total'] : $menorValor ;
-                //$maiorValor = $dado['investimento_total'] > $maiorValor ? $dado['investimento_total'] : $maiorValor ;            
-                if($dado['investimento_total'] < $menorValor){
-                    $menorValor = $dado['investimento_total'];
+            $menorValor = $key == 0 ? $dado['total_investido'] : $menorValor ;
+            if(!empty($dado['total_investido'])){
+                if($dado['total_investido'] < $menorValor){
+                    $menorValor = $dado['total_investido'];
                     $body['min'] = $dado;
                 }
                 else{
                     $menorValor = $menorValor;
                 }
-
-                if($dado['investimento_total'] > $maiorValor){
-                    $maiorValor = $dado['investimento_total'];
+                
+                if($dado['total_investido'] > $maiorValor){
+                    $maiorValor = $dado['total_investido'];
                     $body['max'] = $dado;
                 }
                 else{

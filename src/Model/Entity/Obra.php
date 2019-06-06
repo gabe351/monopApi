@@ -7,20 +7,19 @@ use Cake\ORM\Entity;
  * Obra Entity
  *
  * @property int $id
- * @property int $idn_empreendimento
- * @property int $id_digs
- * @property string $titulo
- * @property float|null $investimento_total
- * @property string $sig_uf
- * @property string $txt_municipios
- * @property string $txt_executores
- * @property string $dsc_orgao
- * @property int $idn_estagio
- * @property \Cake\I18n\FrozenDate $dat_ciclo
- * @property \Cake\I18n\FrozenDate|null $dat_selecao
- * @property \Cake\I18n\FrozenDate|null $dat_conclusao_revisada
- * @property string|null $obra_latitude
- * @property string|null $obra_longitude
+ * @property int $tipo_id
+ * @property string $nome
+ * @property float|null $total_investido
+ * @property string $uf
+ * @property string $municipios
+ * @property string $executor
+ * @property int $estagio_id
+ * @property string $monitorador
+ * @property \Cake\I18n\FrozenDate $data_ciclo
+ * @property \Cake\I18n\FrozenDate|null $data_selecao
+ * @property \Cake\I18n\FrozenDate|null $data_conclusao_revisada
+ * @property string|null $longitude
+ * @property string|null $latitude
  * @property string|null $emblematica
  * @property string|null $observacao
  */

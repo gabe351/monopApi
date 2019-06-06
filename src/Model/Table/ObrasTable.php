@@ -9,6 +9,9 @@ use Cake\Validation\Validator;
 /**
  * Obras Model
  *
+ * @property |\Cake\ORM\Association\BelongsTo $Tipos
+ * @property |\Cake\ORM\Association\BelongsTo $Estagios
+ *
  * @method \App\Model\Entity\Obra get($primaryKey, $options = [])
  * @method \App\Model\Entity\Obra newEntity($data = null, array $options = [])
  * @method \App\Model\Entity\Obra[] newEntities(array $data, array $options = [])
@@ -34,6 +37,15 @@ class ObrasTable extends Table
         $this->setTable('obras');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('Tipos', [
+            'foreignKey' => 'tipo_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Estagios', [
+            'foreignKey' => 'estagio_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
@@ -46,80 +58,64 @@ class ObrasTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create')
-            ->add('id', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->allowEmpty('id', 'create');
 
         $validator
-            ->integer('idn_empreendimento')
-            ->requirePresence('idn_empreendimento', 'create')
-            ->notEmpty('idn_empreendimento');
+            ->scalar('nome')
+            ->maxLength('nome', 200)
+            ->requirePresence('nome', 'create')
+            ->notEmpty('nome');
 
         $validator
-            ->integer('id_digs')
-            ->requirePresence('id_digs', 'create')
-            ->notEmpty('id_digs');
+            ->numeric('total_investido')
+            ->allowEmpty('total_investido');
 
         $validator
-            ->scalar('titulo')
-            ->maxLength('titulo', 200)
-            ->requirePresence('titulo', 'create')
-            ->notEmpty('titulo');
+            ->scalar('uf')
+            ->maxLength('uf', 10)
+            ->requirePresence('uf', 'create')
+            ->notEmpty('uf');
 
         $validator
-            ->decimal('investimento_total')
-            ->allowEmpty('investimento_total');
+            ->scalar('municipios')
+            ->maxLength('municipios', 200)
+            ->requirePresence('municipios', 'create')
+            ->notEmpty('municipios');
 
         $validator
-            ->scalar('sig_uf')
-            ->maxLength('sig_uf', 10)
-            ->requirePresence('sig_uf', 'create')
-            ->notEmpty('sig_uf');
+            ->scalar('executor')
+            ->maxLength('executor', 100)
+            ->requirePresence('executor', 'create')
+            ->notEmpty('executor');
 
         $validator
-            ->scalar('txt_municipios')
-            ->maxLength('txt_municipios', 100)
-            ->requirePresence('txt_municipios', 'create')
-            ->notEmpty('txt_municipios');
+            ->scalar('monitorador')
+            ->maxLength('monitorador', 100)
+            ->requirePresence('monitorador', 'create')
+            ->notEmpty('monitorador');
 
         $validator
-            ->scalar('txt_executores')
-            ->maxLength('txt_executores', 100)
-            ->requirePresence('txt_executores', 'create')
-            ->notEmpty('txt_executores');
+            ->date('data_ciclo')
+            ->requirePresence('data_ciclo', 'create')
+            ->notEmpty('data_ciclo');
 
         $validator
-            ->scalar('dsc_orgao')
-            ->maxLength('dsc_orgao', 100)
-            ->requirePresence('dsc_orgao', 'create')
-            ->notEmpty('dsc_orgao');
+            ->date('data_selecao')
+            ->allowEmpty('data_selecao');
 
         $validator
-            ->integer('idn_estagio')
-            ->requirePresence('idn_estagio', 'create')
-            ->notEmpty('idn_estagio');
+            ->date('data_conclusao_revisada')
+            ->allowEmpty('data_conclusao_revisada');
 
         $validator
-            ->date('dat_ciclo')
-            ->requirePresence('dat_ciclo', 'create')
-            ->notEmpty('dat_ciclo');
+            ->scalar('longitude')
+            ->maxLength('longitude', 20)
+            ->allowEmpty('longitude');
 
         $validator
-            ->date('dat_selecao')
-            ->allowEmpty('dat_selecao');
-
-        $validator
-            ->date('dat_conclusao_revisada')
-            ->allowEmpty('dat_conclusao_revisada');
-
-        $validator
-            ->scalar('obra_latitude')
-            ->maxLength('obra_latitude', 20)
-            ->allowEmpty('obra_latitude');
-
-        $validator
-            ->scalar('obra_longitude')
-            ->maxLength('obra_longitude', 20)
-            ->allowEmpty('obra_longitude');
+            ->scalar('latitude')
+            ->maxLength('latitude', 20)
+            ->allowEmpty('latitude');
 
         $validator
             ->scalar('emblematica')
@@ -143,7 +139,8 @@ class ObrasTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['id']));
+        $rules->add($rules->existsIn(['tipo_id'], 'Tipos'));
+        $rules->add($rules->existsIn(['estagio_id'], 'Estagios'));
 
         return $rules;
     }
