@@ -97,9 +97,10 @@ class ObrasController extends AppController
         $data = $this->getDados('base');
 
         if(!empty($filter)){
-            $data = $this->filters($data, $filter);
+            $data2 = $this->filters($data, $filter);
         }
-        $obras = json_encode($data,true);
+        else{ $data2['Obras'] = $data; }
+        $obras = json_encode($data2,true);
         $this->response->body($obras);
     }
 
@@ -125,7 +126,9 @@ class ObrasController extends AppController
         $this->loadModel('Estagios');
         $data = $this->Estagios->find('all');
 
-        $this->response->body(json_encode($data));
+        $data2['Estagios'] = $data;
+
+        $this->response->body(json_encode($data2));
     }
 
     public function getTipos(){
@@ -135,7 +138,9 @@ class ObrasController extends AppController
         $this->loadModel('Tipos');
         $data = $this->Tipos->find('all');
 
-        $this->response->body(json_encode($data));
+        $data2['Tipos'] = $data;
+
+        $this->response->body(json_encode($data2));
     }
 
     private function filters($data, $filter){
@@ -162,7 +167,7 @@ class ObrasController extends AppController
             'conditions' => $conditions,
             'contain' => ['Tipos', 'Estagios']
         ]);
-        $newObras[] = $newObra;
+        $newObras['Obras'] = $newObra;
         return $newObras;
     }
 
