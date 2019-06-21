@@ -15,7 +15,7 @@ class ObrasController extends AppController
     {
         $url = "http://repositorio.dados.gov.br/governo-politica/administracao-publica/pac/PAC_2018_12.csv";
         $ch     = @curl_init();
-        $timeout= 5;
+        $timeout= 10;
 
         curl_setopt ($ch, CURLOPT_URL, $url);
         curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -47,26 +47,29 @@ class ObrasController extends AppController
             $result[] = str_getcsv($values, ',', '"', '\\');
         }
 
-        foreach ($result as  $dado){            
+        foreach ($result as $dado){            
             $obra = [];
+            $obraSave = [];
+            $dado[3] = floatval($dado[3]);
+
             $obra['id'] = $dado[0];
             $obra['tipo_id'] = $dado[1];
-            $obra['nome'] = $this->cleanStr($dado[2]);
+            $obra['nome'] = $dado[2];
             $obra['total_investido'] = $dado[3];
             $obra['uf'] = $dado[4];
             $obra['municipios'] = $dado[5];
             $obra['executor'] = $this->cleanStr($dado[6]);
             $obra['monitorador'] = $dado[7];
-            $obra['estagio_id'] = $dado[8];
-            $obra['data_ciclo'] = date('Y-m-d', strtotime($dado[9]));
-            $obra['data_selecao'] = date('Y-m-d', strtotime($dado[10]));
-            $obra['data_conclusao_revisada'] = date('Y-m-d', strtotime($dado[11]));
+            $obra['estagio_id'] = $dado[8] == 0 ? 1 : $dado[8];
+            $obra['data_ciclo'] = implode("-",array_reverse(explode("/",$dado[9])));
+            $obra['data_selecao'] = !empty($dado[10]) ? implode("-",array_reverse(explode("/",$dado[10]))) : '';
+            $obra['data_conclusao_revisada'] = !empty($dado[11]) ? implode("-",array_reverse(explode("/",$dado[11]))) : '';
             $obra['latitude'] = $dado[12];
             $obra['longitude'] = $dado[13];
             $obra['emblematica'] = $dado[14];
             $obra['observacao'] = $dado[15];
 
-            $obras = $this->Obras->newEntity(); 
+            $obras = $this->Obras->newEntity();
             $obraSave = $this->Obras->patchEntity($obras, $obra);
             $this->Obras->save($obraSave);
         }
