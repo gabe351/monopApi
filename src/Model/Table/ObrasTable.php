@@ -9,8 +9,8 @@ use Cake\Validation\Validator;
 /**
  * Obras Model
  *
- * @property |\Cake\ORM\Association\BelongsTo $Tipos
- * @property |\Cake\ORM\Association\BelongsTo $Estagios
+ * @property \App\Model\Table\TiposTable|\Cake\ORM\Association\BelongsTo $Tipos
+ * @property \App\Model\Table\EstagiosTable|\Cake\ORM\Association\BelongsTo $Estagios
  *
  * @method \App\Model\Entity\Obra get($primaryKey, $options = [])
  * @method \App\Model\Entity\Obra newEntity($data = null, array $options = [])
@@ -62,12 +62,12 @@ class ObrasTable extends Table
 
         $validator
             ->scalar('nome')
-            ->maxLength('nome', 200)
+            ->maxLength('nome', 255)
             ->requirePresence('nome', 'create')
             ->notEmpty('nome');
 
         $validator
-            ->numeric('total_investido')
+            ->decimal('total_investido', 2)
             ->allowEmpty('total_investido');
 
         $validator

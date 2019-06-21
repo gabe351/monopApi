@@ -12,8 +12,8 @@ use Cake\ORM\Entity;
  * @property float|null $total_investido
  * @property string $uf
  * @property string $municipios
- * @property string $executor
  * @property int $estagio_id
+ * @property string $executor
  * @property string $monitorador
  * @property \Cake\I18n\FrozenDate $data_ciclo
  * @property \Cake\I18n\FrozenDate|null $data_selecao
@@ -22,6 +22,9 @@ use Cake\ORM\Entity;
  * @property string|null $latitude
  * @property string|null $emblematica
  * @property string|null $observacao
+ *
+ * @property \App\Model\Entity\Tipo $tipo
+ * @property \App\Model\Entity\Estagio $estagio
  */
 class Obra extends Entity
 {
